@@ -113,7 +113,8 @@ function GetAllLogs() {
                     select: {
                         first_name: true,
                         last_name: true,
-                        section: true
+                        section: true,
+                        stud_number: true
                     }
                 },
                 login_time: true,
