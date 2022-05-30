@@ -25,8 +25,8 @@ app.post('/login', (req, res) => {
         res.status(500).json({ message: "Internal Error: " + err.message });
     });
 });
-app.post('/logout', (req, res) => {
-    const serial = req.body.serial;
+app.get('/logout/:serial', (req, res) => {
+    const serial = req.params.serial;
     (0, database_1.LogoutStudent)(serial).then(data => {
         if (data == -1)
             res.status(404).json({ message: "Student not found." });

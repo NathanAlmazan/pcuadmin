@@ -23,8 +23,8 @@ app.post('/login', (req, res) => {
     })
 })
 
-app.post('/logout', (req, res) => {
-    const serial: string = req.body.serial;
+app.get('/logout/:serial', (req, res) => {
+    const serial: string = req.params.serial;
 
     LogoutStudent(serial).then(data => {
         if (data == -1) res.status(404).json({ message: "Student not found." });
