@@ -35,8 +35,34 @@ app.post('/logout', (req, res) => {
     })
 })
 
+type Logs = {
+    login_time: Date;
+    logout_time: Date | null;
+    student: {
+        first_name: string;
+        last_name: string;
+        section: string;
+        stud_number: string;
+    }   
+}
+
 app.get('/logs', (req, res) => {
-    GetAllLogs().then(logs => res.status(200).json(logs))
+    GetAllLogs().then(logs => {
+        let logData: Logs[] = [];
+
+        logs.forEach(log => logData.push({
+            login_time: log.login_time,
+            logout_time: log.logout_time,
+            student: {
+                first_name: log.student.first_name,
+                last_name: log.student.last_name,
+                section: log.student.section,
+                stud_number: log.student.stud_number.toString()
+            }   
+        }))
+
+        res.status(200).json(logData)
+    })
     .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
 })
 

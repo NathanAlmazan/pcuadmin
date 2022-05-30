@@ -39,7 +39,20 @@ app.post('/logout', (req, res) => {
     });
 });
 app.get('/logs', (req, res) => {
-    (0, database_1.GetAllLogs)().then(logs => res.status(200).json(logs))
+    (0, database_1.GetAllLogs)().then(logs => {
+        let logData = [];
+        logs.forEach(log => logData.push({
+            login_time: log.login_time,
+            logout_time: log.logout_time,
+            student: {
+                first_name: log.student.first_name,
+                last_name: log.student.last_name,
+                section: log.student.section,
+                stud_number: log.student.stud_number.toString()
+            }
+        }));
+        res.status(200).json(logData);
+    })
         .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
 });
 app.post('/create', (req, res) => {
