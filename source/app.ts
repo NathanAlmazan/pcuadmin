@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
-import { LoginStudent, LogoutStudent, CreateStudent, GetAllLogs } from './database';
+import { LoginStudent, LogoutStudent, CreateStudent, GetAllLogs, GetStudent } from './database';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -64,6 +64,15 @@ app.get('/logs', (req, res) => {
         res.status(200).json(logData)
     })
     .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+})
+
+app.get('/student/:serial', (req, res) => {
+    const serial = req.params.serial;
+
+    GetStudent(serial).then(student => {
+        if (student == 1) res.status(200).json({ message: "Student exists." });
+        else res.status(400).json({ message: "Student not found." });
+    })
 })
 
 app.post('/create', (req, res) => {

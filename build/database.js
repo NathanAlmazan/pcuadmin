@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
+exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
 const client_1 = require("@prisma/client");
 const dataPool = new client_1.PrismaClient();
 function LoginStudent(serial) {
@@ -125,6 +125,22 @@ function GetAllLogs() {
     });
 }
 exports.GetAllLogs = GetAllLogs;
+function GetStudent(serial) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const student = yield dataPool.student.findUnique({
+            where: {
+                serial: serial
+            },
+            select: {
+                student_id: true
+            }
+        });
+        if (student)
+            return 1;
+        return -1;
+    });
+}
+exports.GetStudent = GetStudent;
 function CreateStudent(student) {
     return __awaiter(this, void 0, void 0, function* () {
         yield dataPool.student.create({

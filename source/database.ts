@@ -122,6 +122,20 @@ export async function GetAllLogs() {
     return logs
 }
 
+export async function GetStudent(serial: string) {
+    const student = await dataPool.student.findUnique({
+        where: {
+            serial: serial
+        },
+        select: {
+            student_id: true
+        }
+    })
+
+    if (student) return 1;
+    return -1;
+}
+
 type StudentRecord = {
     stud_number: number;
     first_name: string;
