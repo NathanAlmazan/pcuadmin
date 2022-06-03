@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
+exports.GetAllSubscriptions = exports.SaveSubscription = exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
 const client_1 = require("@prisma/client");
 const dataPool = new client_1.PrismaClient();
 function LoginStudent(serial) {
@@ -26,9 +26,7 @@ function LoginStudent(serial) {
                     student: {
                         serial: serial
                     },
-                    login_time: {
-                        gt: new Date(today.getFullYear(), today.getMonth(), today.getDate())
-                    }
+                    login_time: today
                 }
             },
             select: {
@@ -36,35 +34,24 @@ function LoginStudent(serial) {
             }
         });
         //save attendance
-        // if (!studentLogs) {
-        //     await dataPool.attendace.create({
-        //         data: {
-        //             student_id: student.student_id,
-        //             login_time: new Date(),
-        //         },
-        //         select: {
-        //             attend_id: true
-        //         }
-        //     })
-        //     return 1;
-        // }
-        yield dataPool.attendace.create({
-            data: {
-                student_id: student.student_id,
-                login_time: new Date(),
-            },
-            select: {
-                attend_id: true
-            }
-        });
-        return 1;
-        //return 0;
+        if (!studentLogs) {
+            yield dataPool.attendace.create({
+                data: {
+                    student_id: student.student_id,
+                    login_time: new Date(),
+                },
+                select: {
+                    attend_id: true
+                }
+            });
+            return 1;
+        }
+        return 0;
     });
 }
 exports.LoginStudent = LoginStudent;
 function LogoutStudent(serial) {
     return __awaiter(this, void 0, void 0, function* () {
-        const today = new Date();
         //check if student exist in the database
         const student = yield dataPool.student.findUnique({ where: { serial: serial }, select: { student_id: true } });
         if (!student)
@@ -76,9 +63,7 @@ function LogoutStudent(serial) {
                     student: {
                         serial: serial
                     },
-                    login_time: {
-                        gt: new Date(today.getFullYear(), today.getMonth(), today.getDate())
-                    }
+                    logout_time: null
                 }
             },
             select: {
@@ -88,18 +73,15 @@ function LogoutStudent(serial) {
         });
         //save attendance
         if (studentLogs) {
-            yield dataPool.attendace.update({
+            const data = yield dataPool.attendace.update({
                 where: {
                     attend_id: studentLogs.attend_id
                 },
                 data: {
                     logout_time: new Date()
-                },
-                select: {
-                    attend_id: true
                 }
             });
-            return 1;
+            return data.student_id;
         }
         return 0;
     });
@@ -113,12 +95,16 @@ function GetAllLogs() {
                     select: {
                         first_name: true,
                         last_name: true,
+                        middle_name: true,
                         section: true,
                         stud_number: true
                     }
                 },
                 login_time: true,
                 logout_time: true
+            },
+            orderBy: {
+                login_time: 'desc'
             }
         });
         return logs;
@@ -143,17 +129,48 @@ function GetStudent(serial) {
 exports.GetStudent = GetStudent;
 function CreateStudent(student) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield dataPool.student.create({
+        const newStudent = yield dataPool.student.create({
             data: {
                 first_name: student.first_name,
                 middle_name: student.middle_name,
                 last_name: student.last_name,
-                stud_number: student.stud_number,
+                stud_number: parseInt(student.stud_number),
                 section: student.section,
                 serial: student.serial
             }
         });
+        return newStudent;
     });
 }
 exports.CreateStudent = CreateStudent;
+function SaveSubscription(endpoint, pub, auth) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const subscription = yield dataPool.subscription.findFirst({
+            where: {
+                AND: {
+                    public_key: pub,
+                    key_auth: auth
+                }
+            }
+        });
+        if (!subscription) {
+            yield dataPool.subscription.create({
+                data: {
+                    endpoint: endpoint,
+                    key_auth: auth,
+                    public_key: pub
+                }
+            });
+            return 1;
+        }
+        return -1;
+    });
+}
+exports.SaveSubscription = SaveSubscription;
+function GetAllSubscriptions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield dataPool.subscription.findMany();
+    });
+}
+exports.GetAllSubscriptions = GetAllSubscriptions;
 //# sourceMappingURL=database.js.map

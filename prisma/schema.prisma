@@ -11,13 +11,13 @@ datasource db {
 }
 
 model Student {
-  student_id      Int     @id @default(autoincrement())
+  student_id      Int      @id @default(autoincrement())
   stud_number     BigInt  
-  first_name      String  @db.VarChar(50)
-  last_name       String  @db.VarChar(50)
-  middle_name     String  @db.VarChar(50)
-  section         String  @db.VarChar(10)
-  serial          String  @db.VarChar(20) @unique
+  first_name      String   @db.VarChar(50)
+  last_name       String   @db.VarChar(50)
+  middle_name     String   @db.VarChar(50)
+  section         String   @db.VarChar(10)
+  serial          String   @db.VarChar(20) @unique
   attendance      Attendace[]
 }
 
@@ -27,4 +27,11 @@ model Attendace {
   logout_time    DateTime?
   student_id     Int
   student        Student  @relation(fields: [student_id], references: [student_id], onDelete: Cascade)
+}
+
+model Subscription {
+  sub_id         Int       @id @default(autoincrement())
+  endpoint       String    @db.VarChar(200)
+  public_key     String    @db.VarChar(150)
+  key_auth       String    @db.VarChar(50)
 }
