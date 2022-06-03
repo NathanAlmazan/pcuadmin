@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import webpush, { PushSubscription } from "web-push";
 import http from 'http';
+import path from 'path';
 import { Server } from 'socket.io';
 
 import { LoginStudent, LogoutStudent, CreateStudent, GetAllLogs, GetStudent, SaveSubscription, GetAllSubscriptions } from './database';
@@ -19,6 +20,7 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -26,6 +28,10 @@ const io = new Server(server, {
         origin: ["http://localhost:3000", "http://localhost:4000", "https://tracetemp.herokuapp.com"],
         methods: ["GET", "POST"]
     }
+});
+
+app.get(["/", "/signin", "/reset", "/dashboard/app"], (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 })
 
 app.post('/login', (req, res) => {
