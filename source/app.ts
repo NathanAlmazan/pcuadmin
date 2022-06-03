@@ -14,7 +14,9 @@ dotenv.config();
 
 webpush.setVapidDetails('mailto:nathan.almazan1004@gmail.com', process.env.PUBLIC_VAPID_KEY as string, process.env.PRIVATE_VAPID_KEY as string);
 
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:3000", "http://localhost:4000", "https://tracetemp.herokuapp.com"],
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
