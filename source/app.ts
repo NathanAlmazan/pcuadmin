@@ -7,7 +7,7 @@ import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
 
-import { LoginStudent, LogoutStudent, CreateStudent, GetAllLogs, GetStudent, SaveSubscription, GetAllSubscriptions } from './database';
+import { LoginStudent, LogoutStudent, CreateStudent, GetAllLogs, GetStudent, SaveSubscription, GetSubscription } from './database';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -46,15 +46,16 @@ app.post('/login', (req, res) => {
 
             });
 
-            GetAllSubscriptions().then(subs => {
-                subs.forEach(subscription => webpush.sendNotification({
+            GetSubscription().then(subscription => {
+                if (subscription) webpush.sendNotification({
                     endpoint: subscription.endpoint,
                     keys: {
                         p256dh: subscription.public_key,
                         auth: subscription.key_auth
                     }
-                }, payload).catch(err => console.log((err as Error).stack)));
-            })
+                    }, payload)})
+                .catch(err => console.log((err as Error).stack));
+            
 
             io.sockets.to("common").emit("not_found", serial);
             res.status(404).json({ message: "Student not found." });

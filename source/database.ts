@@ -168,6 +168,6 @@ export async function SaveSubscription(endpoint: string, pub: string, auth: stri
     return -1;
 }
 
-export async function GetAllSubscriptions() {
-    return await dataPool.subscription.findMany();
+export async function GetSubscription() {
+    return await dataPool.subscription.findFirst();
 }
