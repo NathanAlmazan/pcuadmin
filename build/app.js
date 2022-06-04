@@ -34,22 +34,25 @@ app.get(["/", "/signin", "/reset", "/dashboard/app"], (req, res) => {
 });
 app.post('/login', (req, res) => {
     const serial = req.body.serial;
-    (0, database_1.LoginStudent)(serial).then(data => {
+    const temp = req.body.temp;
+    (0, database_1.LoginStudent)(serial, temp).then(data => {
         if (data == -1) {
             const payload = JSON.stringify({
                 title: "Student Not Found",
                 description: "A student with serial number " + serial + " login without a record.",
                 icon: "https://res.cloudinary.com/ddpqji6uq/image/upload/v1654247987/graphql_images/404_kcklr7.png"
             });
-            (0, database_1.GetAllSubscriptions)().then(subs => {
-                subs.forEach(subscription => web_push_1.default.sendNotification({
-                    endpoint: subscription.endpoint,
-                    keys: {
-                        p256dh: subscription.public_key,
-                        auth: subscription.key_auth
-                    }
-                }, payload).catch(err => console.log(err.stack)));
-            });
+            (0, database_1.GetSubscription)().then(subscription => {
+                if (subscription)
+                    web_push_1.default.sendNotification({
+                        endpoint: subscription.endpoint,
+                        keys: {
+                            p256dh: subscription.public_key,
+                            auth: subscription.key_auth
+                        }
+                    }, payload);
+            })
+                .catch(err => console.log(err.stack));
             io.sockets.to("common").emit("not_found", serial);
             res.status(404).json({ message: "Student not found." });
         }

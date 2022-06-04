@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetAllSubscriptions = exports.SaveSubscription = exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
+exports.GetSubscription = exports.SaveSubscription = exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
 const client_1 = require("@prisma/client");
 const dataPool = new client_1.PrismaClient();
-function LoginStudent(serial) {
+function LoginStudent(serial, temperature) {
     return __awaiter(this, void 0, void 0, function* () {
         const today = new Date();
         //check if student exist in the database
@@ -39,6 +39,7 @@ function LoginStudent(serial) {
                 data: {
                     student_id: student.student_id,
                     login_time: new Date(),
+                    temperature: temperature
                 },
                 select: {
                     attend_id: true
@@ -101,7 +102,8 @@ function GetAllLogs() {
                     }
                 },
                 login_time: true,
-                logout_time: true
+                logout_time: true,
+                temperature: true
             },
             orderBy: {
                 login_time: 'desc'
@@ -167,10 +169,10 @@ function SaveSubscription(endpoint, pub, auth) {
     });
 }
 exports.SaveSubscription = SaveSubscription;
-function GetAllSubscriptions() {
+function GetSubscription() {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield dataPool.subscription.findMany();
+        return yield dataPool.subscription.findFirst();
     });
 }
-exports.GetAllSubscriptions = GetAllSubscriptions;
+exports.GetSubscription = GetSubscription;
 //# sourceMappingURL=database.js.map
