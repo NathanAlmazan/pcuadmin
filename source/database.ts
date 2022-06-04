@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const dataPool = new PrismaClient();
 
-export async function LoginStudent(serial: string): Promise<number> {
+export async function LoginStudent(serial: string, temperature: number | undefined): Promise<number> {
     const today = new Date();
 
     //check if student exist in the database
@@ -31,6 +31,7 @@ export async function LoginStudent(serial: string): Promise<number> {
             data: {
                 student_id: student.student_id,
                 login_time: new Date(),
+                temperature: temperature
             },
             select: {
                 attend_id: true
@@ -95,7 +96,8 @@ export async function GetAllLogs() {
                 }
             },
             login_time: true,
-            logout_time: true
+            logout_time: true,
+            temperature: true
         },
         orderBy: {
             login_time: 'desc'

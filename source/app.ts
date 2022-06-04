@@ -36,8 +36,9 @@ app.get(["/", "/signin", "/reset", "/dashboard/app"], (req, res) => {
 
 app.post('/login', (req, res) => {
     const serial: string = req.body.serial;
+    const temp: number | undefined = req.body.temp;
 
-    LoginStudent(serial).then(data => {
+    LoginStudent(serial, temp).then(data => {
         if (data == -1) {
             const payload = JSON.stringify({
                 title: "Student Not Found",
