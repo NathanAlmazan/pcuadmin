@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.js": "https://tracetemp.herokuapp.com/static/js/main.e7887d3f.js",
+    "main.js": "https://tracetemp.herokuapp.com/static/js/main.d26ac683.js",
     "static/js/787.1e8e3ed7.chunk.js": "https://tracetemp.herokuapp.com/static/js/787.1e8e3ed7.chunk.js",
     "index.html": "https://tracetemp.herokuapp.com/index.html",
-    "main.e7887d3f.js.map": "https://tracetemp.herokuapp.com/static/js/main.e7887d3f.js.map",
+    "main.d26ac683.js.map": "https://tracetemp.herokuapp.com/static/js/main.d26ac683.js.map",
     "787.1e8e3ed7.chunk.js.map": "https://tracetemp.herokuapp.com/static/js/787.1e8e3ed7.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.e7887d3f.js"
+    "static/js/main.d26ac683.js"
   ]
 }
