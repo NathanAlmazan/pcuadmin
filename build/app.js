@@ -68,7 +68,9 @@ app.post('/login', (req, res) => {
 });
 app.get('/logout/:serial', (req, res) => {
     const serial = req.params.serial;
-    (0, database_1.LogoutStudent)(serial[1] == '0' ? serial.slice(2) : serial.slice(1)).then(data => {
+    const array = serial.slice(1).split("-");
+    const final = `${parseInt(array[0])}-${parseInt(array[1])}-${parseInt(array[2])}-${parseInt(array[3])}`;
+    (0, database_1.LogoutStudent)(final).then(data => {
         if (data == -1)
             res.status(404).json({ message: "Student not found." });
         else if (data == 0)
