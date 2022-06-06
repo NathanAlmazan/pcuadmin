@@ -191,7 +191,7 @@ app.post('/admin/create', (req, res) => {
 
 app.post('/admin/update', (req, res) => {
     const firstName: string | undefined = req.body.first_name;
-    const lastName: string | undefined = req.body.middle_name;
+    const lastName: string | undefined = req.body.last_name;
     const email: string | undefined = req.body.email;
     const admin: boolean | undefined = req.body.admin;
 

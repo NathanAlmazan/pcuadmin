@@ -1,12 +1,18 @@
 {
   "files": {
-    "main.js": "https://tracetemp.herokuapp.com/static/js/main.59a85009.js",
+    "main.js": "https://tracetemp.herokuapp.com/static/js/main.69dd48b6.js",
+    "static/js/525.83be5d2d.chunk.js": "https://tracetemp.herokuapp.com/static/js/525.83be5d2d.chunk.js",
+    "static/js/125.570a00c6.chunk.js": "https://tracetemp.herokuapp.com/static/js/125.570a00c6.chunk.js",
     "static/js/787.1e8e3ed7.chunk.js": "https://tracetemp.herokuapp.com/static/js/787.1e8e3ed7.chunk.js",
+    "static/js/24.97e9a193.chunk.js": "https://tracetemp.herokuapp.com/static/js/24.97e9a193.chunk.js",
     "index.html": "https://tracetemp.herokuapp.com/index.html",
-    "main.59a85009.js.map": "https://tracetemp.herokuapp.com/static/js/main.59a85009.js.map",
-    "787.1e8e3ed7.chunk.js.map": "https://tracetemp.herokuapp.com/static/js/787.1e8e3ed7.chunk.js.map"
+    "main.69dd48b6.js.map": "https://tracetemp.herokuapp.com/static/js/main.69dd48b6.js.map",
+    "525.83be5d2d.chunk.js.map": "https://tracetemp.herokuapp.com/static/js/525.83be5d2d.chunk.js.map",
+    "125.570a00c6.chunk.js.map": "https://tracetemp.herokuapp.com/static/js/125.570a00c6.chunk.js.map",
+    "787.1e8e3ed7.chunk.js.map": "https://tracetemp.herokuapp.com/static/js/787.1e8e3ed7.chunk.js.map",
+    "24.97e9a193.chunk.js.map": "https://tracetemp.herokuapp.com/static/js/24.97e9a193.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.59a85009.js"
+    "static/js/main.69dd48b6.js"
   ]
 }

@@ -165,7 +165,7 @@ app.post('/admin/create', (req, res) => {
 });
 app.post('/admin/update', (req, res) => {
     const firstName = req.body.first_name;
-    const lastName = req.body.middle_name;
+    const lastName = req.body.last_name;
     const email = req.body.email;
     const admin = req.body.admin;
     (0, database_1.UpdateAdmin)(firstName, lastName, email, admin).then(result => {
