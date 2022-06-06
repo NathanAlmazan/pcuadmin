@@ -208,3 +208,58 @@ export async function GetAllStudents() {
 
     return allStudents;
 }
+
+export async function GetAdminAccount(email: string) {
+    return await dataPool.admin.findUnique({
+        where: {
+            email: email
+        }
+    });
+}
+
+export async function GetAllAdmin() {
+    return await dataPool.admin.findMany({
+        orderBy: {
+            last_name: 'asc'
+        }
+    });
+}
+
+type AdminAccount = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    admin?: boolean;
+}
+
+export async function CreateAdmin(admin: AdminAccount) {
+    return await dataPool.admin.create({
+        data: {
+            email: admin.email,
+            first_name: admin.firstName,
+            last_name: admin.lastName,
+            admin: admin.admin
+        }
+    });
+}
+
+export async function UpdateAdmin(firstName: string | undefined, lastName: string | undefined, email: string | undefined, admin: boolean | undefined) {
+    return await dataPool.admin.update({
+        where: {
+            email: email,
+        },
+        data: {
+            first_name: firstName,
+            last_name: lastName,
+            admin: admin
+        }
+    });
+}
+
+export async function DeleteAdmin(email: string) {
+    return await dataPool.admin.delete({
+        where: {
+            email: email
+        }
+    });
+}

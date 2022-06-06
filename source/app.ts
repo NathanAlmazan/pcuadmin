@@ -7,7 +7,7 @@ import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
 
-import { LoginStudent, LogoutStudent, CreateStudent, GetAllLogs, GetStudent, SaveSubscription, GetSubscription, UpdateStudentRecord, DeleteStudentRecord, GetAllStudents } from './database';
+import { LoginStudent, LogoutStudent, CreateStudent, GetAllLogs, GetStudent, SaveSubscription, GetSubscription, UpdateStudentRecord, DeleteStudentRecord, GetAllStudents, CreateAdmin, UpdateAdmin, DeleteAdmin, GetAdminAccount, GetAllAdmin } from './database';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -176,6 +176,50 @@ app.post('/subscribe', (req, res) => {
 
     SaveSubscription(subscription.endpoint, subscription.keys.p256dh, subscription.keys.auth).then(() => res.status(201).json({ message: "Resource created successfully." }))
     .catch(err => console.log((err as Error).stack));
+})
+
+app.post('/admin/create', (req, res) => {
+    const firstName: string = req.body.first_name;
+    const lastName: string = req.body.last_name;
+    const email: string = req.body.email;
+    const admin: boolean | undefined = req.body.admin;
+
+    CreateAdmin({ firstName, lastName, email, admin }).then(result => {
+        res.status(201).json(result);
+    }).catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+})
+
+app.post('/admin/update', (req, res) => {
+    const firstName: string | undefined = req.body.first_name;
+    const lastName: string | undefined = req.body.middle_name;
+    const email: string | undefined = req.body.email;
+    const admin: boolean | undefined = req.body.admin;
+
+    UpdateAdmin(firstName, lastName, email, admin).then(result => {
+        res.status(200).json(result);
+    }).catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+})
+
+app.post('/admin/delete', (req, res) => {
+    const email: string = req.body.email;
+
+    DeleteAdmin(email).then(result => {
+        res.status(200).json(result);
+    }).catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+})
+
+app.get('/admin/get/:email', (req, res) => {
+    const email: string = req.params.email;
+
+    GetAdminAccount(email).then(result => {
+        res.status(200).json(result);
+    }).catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+})
+
+app.get('/admin/all', (req, res) => {
+    GetAllAdmin().then(result => {
+        res.status(200).json(result);
+    }).catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
 })
 
 io.on("connection", (socket) => {

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetAllStudents = exports.DeleteStudentRecord = exports.UpdateStudentRecord = exports.GetSubscription = exports.SaveSubscription = exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
+exports.DeleteAdmin = exports.UpdateAdmin = exports.CreateAdmin = exports.GetAllAdmin = exports.GetAdminAccount = exports.GetAllStudents = exports.DeleteStudentRecord = exports.UpdateStudentRecord = exports.GetSubscription = exports.SaveSubscription = exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
 const client_1 = require("@prisma/client");
 const dataPool = new client_1.PrismaClient();
 function LoginStudent(serial, temperature) {
@@ -216,4 +216,62 @@ function GetAllStudents() {
     });
 }
 exports.GetAllStudents = GetAllStudents;
+function GetAdminAccount(email) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield dataPool.admin.findUnique({
+            where: {
+                email: email
+            }
+        });
+    });
+}
+exports.GetAdminAccount = GetAdminAccount;
+function GetAllAdmin() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield dataPool.admin.findMany({
+            orderBy: {
+                last_name: 'asc'
+            }
+        });
+    });
+}
+exports.GetAllAdmin = GetAllAdmin;
+function CreateAdmin(admin) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield dataPool.admin.create({
+            data: {
+                email: admin.email,
+                first_name: admin.firstName,
+                last_name: admin.lastName,
+                admin: admin.admin
+            }
+        });
+    });
+}
+exports.CreateAdmin = CreateAdmin;
+function UpdateAdmin(firstName, lastName, email, admin) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield dataPool.admin.update({
+            where: {
+                email: email,
+            },
+            data: {
+                first_name: firstName,
+                last_name: lastName,
+                admin: admin
+            }
+        });
+    });
+}
+exports.UpdateAdmin = UpdateAdmin;
+function DeleteAdmin(email) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield dataPool.admin.delete({
+            where: {
+                email: email
+            }
+        });
+    });
+}
+exports.DeleteAdmin = DeleteAdmin;
 //# sourceMappingURL=database.js.map

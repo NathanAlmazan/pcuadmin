@@ -154,6 +154,41 @@ app.post('/subscribe', (req, res) => {
     (0, database_1.SaveSubscription)(subscription.endpoint, subscription.keys.p256dh, subscription.keys.auth).then(() => res.status(201).json({ message: "Resource created successfully." }))
         .catch(err => console.log(err.stack));
 });
+app.post('/admin/create', (req, res) => {
+    const firstName = req.body.first_name;
+    const lastName = req.body.last_name;
+    const email = req.body.email;
+    const admin = req.body.admin;
+    (0, database_1.CreateAdmin)({ firstName, lastName, email, admin }).then(result => {
+        res.status(201).json(result);
+    }).catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+});
+app.post('/admin/update', (req, res) => {
+    const firstName = req.body.first_name;
+    const lastName = req.body.middle_name;
+    const email = req.body.email;
+    const admin = req.body.admin;
+    (0, database_1.UpdateAdmin)(firstName, lastName, email, admin).then(result => {
+        res.status(200).json(result);
+    }).catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+});
+app.post('/admin/delete', (req, res) => {
+    const email = req.body.email;
+    (0, database_1.DeleteAdmin)(email).then(result => {
+        res.status(200).json(result);
+    }).catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+});
+app.get('/admin/get/:email', (req, res) => {
+    const email = req.params.email;
+    (0, database_1.GetAdminAccount)(email).then(result => {
+        res.status(200).json(result);
+    }).catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+});
+app.get('/admin/all', (req, res) => {
+    (0, database_1.GetAllAdmin)().then(result => {
+        res.status(200).json(result);
+    }).catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+});
 io.on("connection", (socket) => {
     // Join room
     socket.on("join_room", (room) => {

@@ -36,3 +36,11 @@ model Subscription {
   public_key     String    @db.VarChar(150)
   key_auth       String    @db.VarChar(50)
 }
+
+model Admin {
+  admin_id      Int       @id @default(autoincrement())
+  first_name    String    @db.VarChar(50)
+  last_name     String    @db.VarChar(50)
+  email         String    @db.VarChar(100) @unique
+  admin         Boolean   @default(false)
+}
