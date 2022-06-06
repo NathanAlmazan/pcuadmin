@@ -68,7 +68,7 @@ app.post('/login', (req, res) => {
 });
 app.get('/logout/:serial', (req, res) => {
     const serial = req.params.serial;
-    (0, database_1.LogoutStudent)(serial).then(data => {
+    (0, database_1.LogoutStudent)(serial.slice(1)).then(data => {
         if (data == -1)
             res.status(404).json({ message: "Student not found." });
         else if (data == 0)
@@ -100,7 +100,31 @@ app.get('/student/:serial', (req, res) => {
             res.status(200).json({ message: "Student exists." });
         else
             res.status(400).json({ message: "Student not found." });
-    });
+    })
+        .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+});
+app.post('/students/update', (req, res) => {
+    const first_name = req.body.first_name;
+    const middle_name = req.body.middle_name;
+    const last_name = req.body.last_name;
+    const section = req.body.section;
+    const serial = req.body.serial;
+    (0, database_1.UpdateStudentRecord)(serial, first_name, middle_name, last_name, section).then(() => res.status(200).json({ message: "Student updated successfully." }))
+        .catch(err => res.status(400).json({ message: err.message }));
+});
+app.get('/students', (req, res) => {
+    (0, database_1.GetAllStudents)().then(students => res.status(200).json(students.map(stud => (Object.assign(Object.assign({}, stud), { stud_number: stud.stud_number.toString() })))))
+        .catch(err => res.status(400).json({ message: err.message }));
+});
+app.post('/students/delete', (req, res) => {
+    const serial = req.body.serial;
+    (0, database_1.DeleteStudentRecord)(serial).then(result => {
+        if (result > 0)
+            res.status(200).json({ message: "Deleted student successfully." });
+        else
+            res.status(404).json({ message: "Student not found." });
+    })
+        .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
 });
 app.post('/create', (req, res) => {
     const first_name = req.body.first_name;

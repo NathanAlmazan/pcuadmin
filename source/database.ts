@@ -173,3 +173,38 @@ export async function SaveSubscription(endpoint: string, pub: string, auth: stri
 export async function GetSubscription() {
     return await dataPool.subscription.findFirst();
 }
+
+export async function UpdateStudentRecord(serial: string, firstName: string, middleName: string, lastName: string, course: string) {
+    const updated = await dataPool.student.update({
+        where: {
+            serial: serial,
+        },
+        data: {
+            first_name: firstName,
+            last_name: lastName,
+            middle_name: middleName,
+            section: course
+        }
+    })
+}
+
+export async function DeleteStudentRecord(serial: string) {
+    const deleted = await dataPool.student.delete({
+        where: {
+            serial: serial
+        }
+    })
+
+    if (!deleted) return -1;
+    else return deleted.student_id;
+}
+
+export async function GetAllStudents() {
+    const allStudents = await dataPool.student.findMany({
+        orderBy: {
+            stud_number: 'desc'
+        }
+    });
+
+    return allStudents;
+}

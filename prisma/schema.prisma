@@ -12,7 +12,7 @@ datasource db {
 
 model Student {
   student_id      Int      @id @default(autoincrement())
-  stud_number     BigInt  
+  stud_number     BigInt   @unique
   first_name      String   @db.VarChar(50)
   last_name       String   @db.VarChar(50)
   middle_name     String   @db.VarChar(50)

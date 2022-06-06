@@ -7,7 +7,7 @@ import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
 
-import { LoginStudent, LogoutStudent, CreateStudent, GetAllLogs, GetStudent, SaveSubscription, GetSubscription } from './database';
+import { LoginStudent, LogoutStudent, CreateStudent, GetAllLogs, GetStudent, SaveSubscription, GetSubscription, UpdateStudentRecord, DeleteStudentRecord, GetAllStudents } from './database';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -74,7 +74,7 @@ app.post('/login', (req, res) => {
 app.get('/logout/:serial', (req, res) => {
     const serial: string = req.params.serial;
 
-    LogoutStudent(serial).then(data => {
+    LogoutStudent(serial.slice(1)).then(data => {
         if (data == -1) res.status(404).json({ message: "Student not found." });
         else if (data == 0) res.status(400).json({ message: "Student did not logged in today." })
         else {
@@ -110,6 +110,36 @@ app.get('/student/:serial', (req, res) => {
         if (student == 1) res.status(200).json({ message: "Student exists." });
         else res.status(400).json({ message: "Student not found." });
     })
+    .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
+})
+
+app.post('/students/update', (req, res) => {
+    const first_name: string = req.body.first_name;
+    const middle_name: string = req.body.middle_name;
+    const last_name: string = req.body.last_name;
+    const section: string = req.body.section;
+    const serial: string = req.body.serial;
+
+    UpdateStudentRecord(serial, first_name, middle_name, last_name, section).then(() => res.status(200).json({ message: "Student updated successfully." }))
+    .catch(err => res.status(400).json({ message: (err as Error).message }));
+})
+
+app.get('/students', (req, res) => {
+    GetAllStudents().then(students => res.status(200).json(students.map(stud => ({
+        ...stud,
+        stud_number: stud.stud_number.toString()
+    }))))
+    .catch(err => res.status(400).json({ message: (err as Error).message }));
+})
+
+app.post('/students/delete', (req, res) => {
+    const serial: string = req.body.serial;
+
+    DeleteStudentRecord(serial).then(result => {
+        if (result > 0) res.status(200).json({ message: "Deleted student successfully." })
+        else res.status(404).json({ message: "Student not found." })
+    })
+    .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
 })
 
 app.post('/create', (req, res) => {

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetSubscription = exports.SaveSubscription = exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
+exports.GetAllStudents = exports.DeleteStudentRecord = exports.UpdateStudentRecord = exports.GetSubscription = exports.SaveSubscription = exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
 const client_1 = require("@prisma/client");
 const dataPool = new client_1.PrismaClient();
 function LoginStudent(serial, temperature) {
@@ -175,4 +175,45 @@ function GetSubscription() {
     });
 }
 exports.GetSubscription = GetSubscription;
+function UpdateStudentRecord(serial, firstName, middleName, lastName, course) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const updated = yield dataPool.student.update({
+            where: {
+                serial: serial,
+            },
+            data: {
+                first_name: firstName,
+                last_name: lastName,
+                middle_name: middleName,
+                section: course
+            }
+        });
+    });
+}
+exports.UpdateStudentRecord = UpdateStudentRecord;
+function DeleteStudentRecord(serial) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const deleted = yield dataPool.student.delete({
+            where: {
+                serial: serial
+            }
+        });
+        if (!deleted)
+            return -1;
+        else
+            return deleted.student_id;
+    });
+}
+exports.DeleteStudentRecord = DeleteStudentRecord;
+function GetAllStudents() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const allStudents = yield dataPool.student.findMany({
+            orderBy: {
+                stud_number: 'desc'
+            }
+        });
+        return allStudents;
+    });
+}
+exports.GetAllStudents = GetAllStudents;
 //# sourceMappingURL=database.js.map
