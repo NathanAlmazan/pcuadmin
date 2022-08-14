@@ -9,24 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteAdmin = exports.UpdateAdmin = exports.CreateAdmin = exports.GetAllAdmin = exports.GetAdminAccount = exports.GetAllStudents = exports.DeleteStudentRecord = exports.UpdateStudentRecord = exports.GetSubscription = exports.SaveSubscription = exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LogoutStudent = exports.LoginStudent = void 0;
+exports.DeleteAdmin = exports.UpdateAdmin = exports.CreateAdmin = exports.GetAllAdmin = exports.GetAdminAccount = exports.GetAllStudents = exports.DeleteStudentRecord = exports.UpdateStudentRecord = exports.GetSubscription = exports.SaveSubscription = exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LoginStudent = void 0;
 const client_1 = require("@prisma/client");
 const dataPool = new client_1.PrismaClient();
-function LoginStudent(serial, temperature) {
+function LoginStudent(serial) {
     return __awaiter(this, void 0, void 0, function* () {
-        const today = new Date();
         //check if student exist in the database
         const student = yield dataPool.student.findUnique({ where: { serial: serial }, select: { student_id: true } });
         if (!student)
             return -1;
         //check if student already logged in
-        const studentLogs = yield dataPool.attendace.findFirst({
+        const studentLogs = yield dataPool.attendace.findMany({
             where: {
-                AND: {
-                    student: {
-                        serial: serial
-                    },
-                    login_time: today
+                student: {
+                    serial: serial
                 }
             },
             select: {
@@ -34,12 +30,11 @@ function LoginStudent(serial, temperature) {
             }
         });
         //save attendance
-        if (!studentLogs) {
+        if (studentLogs.length % 2 === 0) {
             yield dataPool.attendace.create({
                 data: {
                     student_id: student.student_id,
-                    login_time: new Date(),
-                    temperature: temperature
+                    log_type: "IN"
                 },
                 select: {
                     attend_id: true
@@ -47,47 +42,19 @@ function LoginStudent(serial, temperature) {
             });
             return 1;
         }
+        yield dataPool.attendace.create({
+            data: {
+                student_id: student.student_id,
+                log_type: "OUT"
+            },
+            select: {
+                attend_id: true
+            }
+        });
         return 0;
     });
 }
 exports.LoginStudent = LoginStudent;
-function LogoutStudent(serial) {
-    return __awaiter(this, void 0, void 0, function* () {
-        //check if student exist in the database
-        const student = yield dataPool.student.findUnique({ where: { serial: serial }, select: { student_id: true } });
-        if (!student)
-            return -1;
-        //check if student already logged in
-        const studentLogs = yield dataPool.attendace.findFirst({
-            where: {
-                AND: {
-                    student: {
-                        serial: serial
-                    },
-                    logout_time: null
-                }
-            },
-            select: {
-                student_id: true,
-                attend_id: true
-            }
-        });
-        //save attendance
-        if (studentLogs) {
-            const data = yield dataPool.attendace.update({
-                where: {
-                    attend_id: studentLogs.attend_id
-                },
-                data: {
-                    logout_time: new Date()
-                }
-            });
-            return data.student_id;
-        }
-        return 0;
-    });
-}
-exports.LogoutStudent = LogoutStudent;
 function GetAllLogs() {
     return __awaiter(this, void 0, void 0, function* () {
         const logs = yield dataPool.attendace.findMany({
@@ -101,12 +68,11 @@ function GetAllLogs() {
                         stud_number: true
                     }
                 },
-                login_time: true,
-                logout_time: true,
-                temperature: true
+                log_datetime: true,
+                log_type: true
             },
             orderBy: {
-                login_time: 'desc'
+                log_datetime: 'desc'
             }
         });
         return logs;

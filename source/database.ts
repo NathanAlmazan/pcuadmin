@@ -2,8 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const dataPool = new PrismaClient();
 
-export async function LoginStudent(serial: string, temperature: number | undefined): Promise<number> {
-    const today = new Date();
+export async function LoginStudent(serial: string): Promise<number> {
 
     //check if student exist in the database
     const student = await dataPool.student.findUnique({ where: { serial: serial }, select: { student_id: true }});
@@ -11,13 +10,10 @@ export async function LoginStudent(serial: string, temperature: number | undefin
     if (!student) return -1;
     
     //check if student already logged in
-    const studentLogs = await dataPool.attendace.findFirst({
+    const studentLogs = await dataPool.attendace.findMany({
         where: {
-            AND: {
-                student: {
-                    serial: serial
-                },
-                login_time: today
+            student: {
+                serial: serial
             }
         },
         select: {
@@ -26,12 +22,11 @@ export async function LoginStudent(serial: string, temperature: number | undefin
     })
 
     //save attendance
-    if (!studentLogs) {
+    if (studentLogs.length % 2 === 0) {
         await dataPool.attendace.create({
             data: {
                 student_id: student.student_id,
-                login_time: new Date(),
-                temperature: temperature
+                log_type: "IN"
             },
             select: {
                 attend_id: true
@@ -41,44 +36,15 @@ export async function LoginStudent(serial: string, temperature: number | undefin
         return 1;
     }
 
-    return 0;
-}
-
-export async function LogoutStudent(serial: string): Promise<number> {
-    //check if student exist in the database
-    const student = await dataPool.student.findUnique({ where: { serial: serial }, select: { student_id: true }});
-
-    if (!student) return -1;
-    
-    //check if student already logged in
-    const studentLogs = await dataPool.attendace.findFirst({
-        where: {
-            AND: {
-                student: {
-                    serial: serial
-                },
-                logout_time: null
-            }
+    await dataPool.attendace.create({
+        data: {
+            student_id: student.student_id,
+            log_type: "OUT"
         },
         select: {
-            student_id: true,
             attend_id: true
         }
     })
-
-    //save attendance
-    if (studentLogs) {
-        const data = await dataPool.attendace.update({
-            where: {
-                attend_id: studentLogs.attend_id
-            },
-            data: {
-                logout_time: new Date()
-            }
-        })
-
-        return data.student_id;
-    }
 
     return 0;
 }
@@ -95,12 +61,11 @@ export async function GetAllLogs() {
                     stud_number: true
                 }
             },
-            login_time: true,
-            logout_time: true,
-            temperature: true
+            log_datetime: true,
+            log_type: true
         },
         orderBy: {
-            login_time: 'desc'
+            log_datetime: 'desc'
         }
     })
 

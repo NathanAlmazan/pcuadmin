@@ -32,10 +32,9 @@ const io = new socket_io_1.Server(server, {
 app.get(["/", "/signin", "/reset", "/dashboard/app"], (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "..", "public", "index.html"));
 });
-app.post('/login', (req, res) => {
-    const serial = req.body.serial;
-    const temp = req.body.temp;
-    (0, database_1.LoginStudent)(serial, temp).then(data => {
+app.get('/log/:serial', (req, res) => {
+    const serial = req.params.serial;
+    (0, database_1.LoginStudent)(serial).then(data => {
         if (data == -1) {
             const payload = JSON.stringify({
                 title: "Student Not Found",
@@ -56,28 +55,13 @@ app.post('/login', (req, res) => {
             io.sockets.to("common").emit("not_found", serial);
             res.status(404).json({ message: "Student not found." });
         }
-        else if (data == 0)
-            res.status(400).json({ message: "Student already logged in today." });
+        else if (data == 0) {
+            io.sockets.to("common").emit("update_list");
+            res.status(200).json({ message: "Student logged out successfully." });
+        }
         else {
             io.sockets.to("common").emit("update_list");
             res.status(200).json({ message: "Student logged in successfully." });
-        }
-    }).catch(err => {
-        res.status(500).json({ message: "Internal Error: " + err.message });
-    });
-});
-app.get('/logout/:serial', (req, res) => {
-    const serial = req.params.serial;
-    const array = serial.slice(1).split("-");
-    const final = `${parseInt(array[0])}-${parseInt(array[1])}-${parseInt(array[2])}-${parseInt(array[3])}`;
-    (0, database_1.LogoutStudent)(final).then(data => {
-        if (data == -1)
-            res.status(404).json({ message: "Student not found." });
-        else if (data == 0)
-            res.status(400).json({ message: "Student did not logged in today." });
-        else {
-            io.sockets.to("common").emit("update_list");
-            res.status(200).json({ message: "Student logged out successfully." });
         }
     }).catch(err => {
         res.status(500).json({ message: "Internal Error: " + err.message });

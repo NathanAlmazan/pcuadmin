@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./build/app.js",
-    "heroku-postbuild": "npx prisma generate",
+    "build": "tsc -p .",
     "dev": "nodemon ./source/app.ts"
   },
   "dependencies": {

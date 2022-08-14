@@ -23,9 +23,8 @@ model Student {
 
 model Attendace {
   attend_id      Int       @id @default(autoincrement())
-  temperature    Float     @default(36.0)
-  login_time     DateTime  
-  logout_time    DateTime?
+  log_datetime   DateTime  @default(now())
+  log_type       String    @db.VarChar(3)
   student_id     Int
   student        Student  @relation(fields: [student_id], references: [student_id], onDelete: Cascade)
 }
