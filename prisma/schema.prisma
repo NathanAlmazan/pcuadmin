@@ -18,6 +18,7 @@ model Student {
   middle_name     String   @db.VarChar(50)
   section         String   @db.VarChar(10)
   serial          String   @db.VarChar(20) @unique
+  photo_url       String   @db.VarChar(255)
   attendance      Attendace[]
 }
 

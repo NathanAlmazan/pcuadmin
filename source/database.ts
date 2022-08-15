@@ -92,6 +92,7 @@ type StudentRecord = {
     last_name: string;
     middle_name: string;
     section: string;
+    photo_url: string;
     serial: string;
 }
 
@@ -103,7 +104,8 @@ export async function CreateStudent(student: StudentRecord) {
             last_name: student.last_name,
             stud_number: parseInt(student.stud_number),
             section: student.section,
-            serial: student.serial
+            serial: student.serial,
+            photo_url: student.photo_url
         }
     });
 

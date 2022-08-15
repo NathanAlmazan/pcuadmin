@@ -117,9 +117,10 @@ app.post('/create', (req, res) => {
     const middle_name = req.body.middle_name;
     const last_name = req.body.last_name;
     const stud_number = req.body.stud_number;
+    const photo_url = req.body.photo_url;
     const section = req.body.section;
     const serial = req.body.serial;
-    (0, database_1.CreateStudent)({ first_name, middle_name, last_name, stud_number, section, serial })
+    (0, database_1.CreateStudent)({ first_name, middle_name, last_name, stud_number, section, photo_url, serial })
         .then(() => res.status(200).json({ message: "Student created successfully." }))
         .catch(err => {
         console.log(err.message);
