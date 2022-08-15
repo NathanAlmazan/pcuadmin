@@ -7,8 +7,7 @@ import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
 
-import { LoginStudent, CreateStudent, GetAllLogs, GetStudent, SaveSubscription, GetSubscription, UpdateStudentRecord, DeleteStudentRecord, GetAllStudents, CreateAdmin, UpdateAdmin, DeleteAdmin, GetAdminAccount, GetAllAdmin } from './database';
-import { Student } from '@prisma/client';
+import { SendAttendanceEmail, LoginStudent, CreateStudent, GetAllLogs, GetStudent, SaveSubscription, GetSubscription, UpdateStudentRecord, DeleteStudentRecord, GetAllStudents, CreateAdmin, UpdateAdmin, DeleteAdmin, GetAdminAccount, GetAllAdmin } from './database';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -38,7 +37,7 @@ app.get(["/", "/signin", "/reset", "/dashboard/app"], (req, res) => {
 app.get('/log/:serial', (req, res) => {
     const serial: string = req.params.serial;
 
-    LoginStudent(serial).then(data => {
+    LoginStudent(serial).then(async (data) => {
         if (data == -1) {
             const payload = JSON.stringify({
                 title: "Student Not Found",
@@ -62,10 +61,12 @@ app.get('/log/:serial', (req, res) => {
             res.status(404).json({ message: "Student not found." });
         }
         else if (data == 0) {
+            await SendAttendanceEmail(serial, "out")
             io.sockets.to("common").emit("update_list", serial);
             res.status(200).json({ message: "Student logged out successfully." });
         }
         else {
+            await SendAttendanceEmail(serial, "in")
             io.sockets.to("common").emit("update_list", serial);
             res.status(200).json({ message: "Student logged in successfully." });
         }
@@ -141,8 +142,9 @@ app.post('/create', (req, res) => {
     const photo_url: string = req.body.photo_url;
     const section: string = req.body.section;
     const serial: string = req.body.serial;
+    const parent_email: string = req.body.parent_email;
     
-    CreateStudent({ first_name, middle_name, last_name, stud_number, section, photo_url, serial })
+    CreateStudent({ first_name, middle_name, last_name, stud_number, section, photo_url, serial, parent_email })
     .then(() => res.status(200).json({ message: "Student created successfully." }))
     .catch(err => {
         console.log(err.message);

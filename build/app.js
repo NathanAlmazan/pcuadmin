@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -34,7 +43,7 @@ app.get(["/", "/signin", "/reset", "/dashboard/app"], (req, res) => {
 });
 app.get('/log/:serial', (req, res) => {
     const serial = req.params.serial;
-    (0, database_1.LoginStudent)(serial).then(data => {
+    (0, database_1.LoginStudent)(serial).then((data) => __awaiter(void 0, void 0, void 0, function* () {
         if (data == -1) {
             const payload = JSON.stringify({
                 title: "Student Not Found",
@@ -56,14 +65,16 @@ app.get('/log/:serial', (req, res) => {
             res.status(404).json({ message: "Student not found." });
         }
         else if (data == 0) {
+            yield (0, database_1.SendAttendanceEmail)(serial, "out");
             io.sockets.to("common").emit("update_list", serial);
             res.status(200).json({ message: "Student logged out successfully." });
         }
         else {
+            yield (0, database_1.SendAttendanceEmail)(serial, "in");
             io.sockets.to("common").emit("update_list", serial);
             res.status(200).json({ message: "Student logged in successfully." });
         }
-    }).catch(err => {
+    })).catch(err => {
         res.status(500).json({ message: "Internal Error: " + err.message });
     });
 });
@@ -122,7 +133,8 @@ app.post('/create', (req, res) => {
     const photo_url = req.body.photo_url;
     const section = req.body.section;
     const serial = req.body.serial;
-    (0, database_1.CreateStudent)({ first_name, middle_name, last_name, stud_number, section, photo_url, serial })
+    const parent_email = req.body.parent_email;
+    (0, database_1.CreateStudent)({ first_name, middle_name, last_name, stud_number, section, photo_url, serial, parent_email })
         .then(() => res.status(200).json({ message: "Student created successfully." }))
         .catch(err => {
         console.log(err.message);

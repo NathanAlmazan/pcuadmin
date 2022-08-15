@@ -8,9 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteAdmin = exports.UpdateAdmin = exports.CreateAdmin = exports.GetAllAdmin = exports.GetAdminAccount = exports.GetAllStudents = exports.DeleteStudentRecord = exports.UpdateStudentRecord = exports.GetSubscription = exports.SaveSubscription = exports.CreateStudent = exports.GetStudent = exports.GetAllLogs = exports.LoginStudent = void 0;
+exports.DeleteAdmin = exports.UpdateAdmin = exports.CreateAdmin = exports.GetAllAdmin = exports.GetAdminAccount = exports.GetAllStudents = exports.DeleteStudentRecord = exports.UpdateStudentRecord = exports.GetSubscription = exports.SaveSubscription = exports.CreateStudent = exports.SendAttendanceEmail = exports.GetStudent = exports.GetAllLogs = exports.LoginStudent = void 0;
 const client_1 = require("@prisma/client");
+const emailConfig_1 = __importDefault(require("./emailConfig"));
 const dataPool = new client_1.PrismaClient();
 function LoginStudent(serial) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -92,6 +96,20 @@ function GetStudent(serial) {
     });
 }
 exports.GetStudent = GetStudent;
+function SendAttendanceEmail(serial, status) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const student = yield dataPool.student.findUnique({
+            where: {
+                serial: serial
+            }
+        });
+        if (student) {
+            yield (0, emailConfig_1.default)(student.parent_email, `${student.first_name} ${student.last_name} Attendace Report`, `${student.last_name}, ${student.first_name} ${student.middle_name}`, new Date().toLocaleString(), status, student.last_name);
+        }
+        return null;
+    });
+}
+exports.SendAttendanceEmail = SendAttendanceEmail;
 function CreateStudent(student) {
     return __awaiter(this, void 0, void 0, function* () {
         const newStudent = yield dataPool.student.create({
@@ -102,7 +120,8 @@ function CreateStudent(student) {
                 stud_number: parseInt(student.stud_number),
                 section: student.section,
                 serial: student.serial,
-                photo_url: student.photo_url
+                photo_url: student.photo_url,
+                parent_email: student.parent_email
             }
         });
         return newStudent;

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import sendEmail from "./emailConfig";
 
 const dataPool = new PrismaClient();
 
@@ -83,6 +84,27 @@ export async function GetStudent(serial: string) {
     return null;
 }
 
+export async function SendAttendanceEmail(serial: string, status: string) {
+    const student = await dataPool.student.findUnique({
+        where: {
+            serial: serial
+        }
+    })
+
+    if (student) {
+        await sendEmail(
+            student.parent_email, 
+            `${student.first_name} ${student.last_name} Attendace Report`,
+            `${student.last_name}, ${student.first_name} ${student.middle_name}`,
+            new Date().toLocaleString(),
+            status,
+            student.last_name
+        )
+    }
+
+    return null;
+}
+
 type StudentRecord = {
     stud_number: string;
     first_name: string;
@@ -91,6 +113,7 @@ type StudentRecord = {
     section: string;
     photo_url: string;
     serial: string;
+    parent_email: string;
 }
 
 export async function CreateStudent(student: StudentRecord) {
@@ -102,7 +125,8 @@ export async function CreateStudent(student: StudentRecord) {
             stud_number: parseInt(student.stud_number),
             section: student.section,
             serial: student.serial,
-            photo_url: student.photo_url
+            photo_url: student.photo_url,
+            parent_email: student.parent_email
         }
     });
 
