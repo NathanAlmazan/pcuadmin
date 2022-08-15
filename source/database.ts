@@ -76,9 +76,6 @@ export async function GetStudent(serial: string) {
     const student = await dataPool.student.findUnique({
         where: {
             serial: serial
-        },
-        select: {
-            student_id: true
         }
     })
 

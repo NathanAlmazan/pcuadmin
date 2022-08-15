@@ -84,9 +84,6 @@ function GetStudent(serial) {
         const student = yield dataPool.student.findUnique({
             where: {
                 serial: serial
-            },
-            select: {
-                student_id: true
             }
         });
         if (student)
