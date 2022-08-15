@@ -82,8 +82,10 @@ app.get('/logs', (req, res) => {
 app.get('/student/:serial', (req, res) => {
     const serial = req.params.serial;
     (0, database_1.GetStudent)(serial).then(student => {
-        if (student == 1)
-            res.status(200).json({ message: "Student exists." });
+        if (student) {
+            const updatedStudent = Object.assign(Object.assign({}, student), { stud_number: parseInt(student.stud_number.toString()) });
+            res.status(200).json(updatedStudent);
+        }
         else
             res.status(400).json({ message: "Student not found." });
     })

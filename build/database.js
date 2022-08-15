@@ -87,8 +87,8 @@ function GetStudent(serial) {
             }
         });
         if (student)
-            return 1;
-        return -1;
+            return student;
+        return null;
     });
 }
 exports.GetStudent = GetStudent;

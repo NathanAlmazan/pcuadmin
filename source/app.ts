@@ -8,6 +8,7 @@ import path from 'path';
 import { Server } from 'socket.io';
 
 import { LoginStudent, CreateStudent, GetAllLogs, GetStudent, SaveSubscription, GetSubscription, UpdateStudentRecord, DeleteStudentRecord, GetAllStudents, CreateAdmin, UpdateAdmin, DeleteAdmin, GetAdminAccount, GetAllAdmin } from './database';
+import { Student } from '@prisma/client';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -94,7 +95,10 @@ app.get('/student/:serial', (req, res) => {
     const serial = req.params.serial;
 
     GetStudent(serial).then(student => {
-        if (student == 1) res.status(200).json({ message: "Student exists." });
+        if (student) {
+            const updatedStudent = { ...student, stud_number: parseInt(student.stud_number.toString()) }
+            res.status(200).json(updatedStudent);
+        }
         else res.status(400).json({ message: "Student not found." });
     })
     .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));

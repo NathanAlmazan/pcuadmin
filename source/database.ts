@@ -79,8 +79,8 @@ export async function GetStudent(serial: string) {
         }
     })
 
-    if (student) return 1;
-    return -1;
+    if (student) return student;
+    return null;
 }
 
 type StudentRecord = {
