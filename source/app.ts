@@ -61,11 +61,11 @@ app.get('/log/:serial', (req, res) => {
             res.status(404).json({ message: "Student not found." });
         }
         else if (data == 0) {
-            io.sockets.to("common").emit("update_list");
+            io.sockets.to("common").emit("update_list", serial);
             res.status(200).json({ message: "Student logged out successfully." });
         }
         else {
-            io.sockets.to("common").emit("update_list");
+            io.sockets.to("common").emit("update_list", serial);
             res.status(200).json({ message: "Student logged in successfully." });
         }
     }).catch(err => {
