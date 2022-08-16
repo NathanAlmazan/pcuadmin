@@ -162,7 +162,7 @@ export async function GetSubscription() {
     return await dataPool.subscription.findFirst();
 }
 
-export async function UpdateStudentRecord(serial: string, firstName: string, middleName: string, lastName: string, course: string) {
+export async function UpdateStudentRecord(serial: string, firstName: string, middleName: string, lastName: string, course: string, photo_url: string, parent_email: string) {
     const updated = await dataPool.student.update({
         where: {
             serial: serial,
@@ -171,7 +171,9 @@ export async function UpdateStudentRecord(serial: string, firstName: string, mid
             first_name: firstName,
             last_name: lastName,
             middle_name: middleName,
-            section: course
+            section: course,
+            photo_url: photo_url,
+            parent_email: parent_email
         }
     })
 }

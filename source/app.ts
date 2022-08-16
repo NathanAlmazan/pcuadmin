@@ -111,8 +111,10 @@ app.post('/students/update', (req, res) => {
     const last_name: string = req.body.last_name;
     const section: string = req.body.section;
     const serial: string = req.body.serial;
+    const photo_url: string = req.body.photo_url;
+    const parent_email: string = req.body.parent_email;
 
-    UpdateStudentRecord(serial, first_name, middle_name, last_name, section).then(() => res.status(200).json({ message: "Student updated successfully." }))
+    UpdateStudentRecord(serial, first_name, middle_name, last_name, section, photo_url, parent_email).then(() => res.status(200).json({ message: "Student updated successfully." }))
     .catch(err => res.status(400).json({ message: (err as Error).message }));
 })
 
