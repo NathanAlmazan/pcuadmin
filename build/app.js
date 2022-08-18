@@ -108,7 +108,9 @@ app.post('/students/update', (req, res) => {
     const last_name = req.body.last_name;
     const section = req.body.section;
     const serial = req.body.serial;
-    (0, database_1.UpdateStudentRecord)(serial, first_name, middle_name, last_name, section).then(() => res.status(200).json({ message: "Student updated successfully." }))
+    const photo_url = req.body.photo_url;
+    const parent_email = req.body.parent_email;
+    (0, database_1.UpdateStudentRecord)(serial, first_name, middle_name, last_name, section, photo_url, parent_email).then(() => res.status(200).json({ message: "Student updated successfully." }))
         .catch(err => res.status(400).json({ message: err.message }));
 });
 app.get('/students', (req, res) => {

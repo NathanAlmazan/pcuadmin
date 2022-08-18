@@ -158,7 +158,7 @@ function GetSubscription() {
     });
 }
 exports.GetSubscription = GetSubscription;
-function UpdateStudentRecord(serial, firstName, middleName, lastName, course) {
+function UpdateStudentRecord(serial, firstName, middleName, lastName, course, photo_url, parent_email) {
     return __awaiter(this, void 0, void 0, function* () {
         const updated = yield dataPool.student.update({
             where: {
@@ -168,7 +168,9 @@ function UpdateStudentRecord(serial, firstName, middleName, lastName, course) {
                 first_name: firstName,
                 last_name: lastName,
                 middle_name: middleName,
-                section: course
+                section: course,
+                photo_url: photo_url,
+                parent_email: parent_email
             }
         });
     });
