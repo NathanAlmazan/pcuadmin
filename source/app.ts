@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:3000", "http://localhost:4000", "https://tracetemp.herokuapp.com"],
+        origin: ["http://localhost:3000", "http://localhost:4000", "https://tracetemp.herokuapp.com", "http://34.72.183.89"],
         methods: ["GET", "POST"]
     }
 });
