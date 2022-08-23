@@ -26,7 +26,7 @@ const port = process.env.PORT || 4000;
 dotenv_1.default.config();
 web_push_1.default.setVapidDetails('mailto:nathan.almazan1004@gmail.com', process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY);
 app.use((0, cors_1.default)({
-    origin: ["http://localhost:3000", "http://localhost:4000", "https://tracetemp.herokuapp.com"],
+    origin: ["http://localhost:3000", "http://localhost:4000", "https://tracetemp.herokuapp.com", "http://34.72.183.89"],
 }));
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -34,7 +34,7 @@ app.use(express_1.default.static(path_1.default.join(__dirname, '..', 'public'))
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
     cors: {
-        origin: ["http://localhost:3000", "http://localhost:4000", "https://tracetemp.herokuapp.com"],
+        origin: ["http://localhost:3000", "http://localhost:4000", "https://tracetemp.herokuapp.com", "http://34.72.183.89"],
         methods: ["GET", "POST"]
     }
 });
