@@ -59,7 +59,8 @@ export async function GetAllLogs() {
                     last_name: true,
                     middle_name: true,
                     section: true,
-                    isStaff: true
+                    isStaff: true,
+                    serial: true
                 }
             },
             log_datetime: true,

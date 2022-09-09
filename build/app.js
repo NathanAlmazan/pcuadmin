@@ -85,7 +85,8 @@ app.get('/logs', (req, res) => {
                 last_name: log.student.last_name,
                 middle_name: log.student.middle_name,
                 section: log.student.section,
-                isStaff: log.student.isStaff
+                isStaff: log.student.isStaff,
+                serial: log.student.serial
             } }))));
     })
         .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
