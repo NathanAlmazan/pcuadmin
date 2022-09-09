@@ -85,7 +85,7 @@ app.get('/logs', (req, res) => {
                 last_name: log.student.last_name,
                 middle_name: log.student.middle_name,
                 section: log.student.section,
-                stud_number: log.student.stud_number.toString()
+                isStaff: log.student.isStaff
             }
         })));
     })
@@ -96,10 +96,7 @@ app.get('/student/:serial', (req, res) => {
     const serial = req.params.serial;
 
     GetStudent(serial).then(student => {
-        if (student) {
-            const updatedStudent = { ...student, stud_number: parseInt(student.stud_number.toString()) }
-            res.status(200).json(updatedStudent);
-        }
+        if (student) res.status(200).json(student);
         else res.status(400).json({ message: "Student not found." });
     })
     .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
@@ -119,10 +116,7 @@ app.post('/students/update', (req, res) => {
 })
 
 app.get('/students', (req, res) => {
-    GetAllStudents().then(students => res.status(200).json(students.map(stud => ({
-        ...stud,
-        stud_number: stud.stud_number.toString()
-    }))))
+    GetAllStudents().then(students => res.status(200).json(students))
     .catch(err => res.status(400).json({ message: (err as Error).message }));
 })
 
@@ -140,13 +134,13 @@ app.post('/create', (req, res) => {
     const first_name: string = req.body.first_name;
     const middle_name: string = req.body.middle_name;
     const last_name: string = req.body.last_name;
-    const stud_number: string = req.body.stud_number;
+    const isStaff: boolean = req.body.isStaff;
     const photo_url: string = req.body.photo_url;
     const section: string = req.body.section;
     const serial: string = req.body.serial;
     const parent_email: string = req.body.parent_email;
     
-    CreateStudent({ first_name, middle_name, last_name, stud_number, section, photo_url, serial, parent_email })
+    CreateStudent({ first_name, middle_name, last_name, isStaff, section, photo_url, serial, parent_email })
     .then(() => res.status(200).json({ message: "Student created successfully." }))
     .catch(err => {
         console.log(err.message);

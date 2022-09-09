@@ -85,7 +85,7 @@ app.get('/logs', (req, res) => {
                 last_name: log.student.last_name,
                 middle_name: log.student.middle_name,
                 section: log.student.section,
-                stud_number: log.student.stud_number.toString()
+                isStaff: log.student.isStaff
             } }))));
     })
         .catch(err => res.status(500).json({ message: "Internal Error: " + err.message }));
@@ -93,10 +93,8 @@ app.get('/logs', (req, res) => {
 app.get('/student/:serial', (req, res) => {
     const serial = req.params.serial;
     (0, database_1.GetStudent)(serial).then(student => {
-        if (student) {
-            const updatedStudent = Object.assign(Object.assign({}, student), { stud_number: parseInt(student.stud_number.toString()) });
-            res.status(200).json(updatedStudent);
-        }
+        if (student)
+            res.status(200).json(student);
         else
             res.status(400).json({ message: "Student not found." });
     })
@@ -114,7 +112,7 @@ app.post('/students/update', (req, res) => {
         .catch(err => res.status(400).json({ message: err.message }));
 });
 app.get('/students', (req, res) => {
-    (0, database_1.GetAllStudents)().then(students => res.status(200).json(students.map(stud => (Object.assign(Object.assign({}, stud), { stud_number: stud.stud_number.toString() })))))
+    (0, database_1.GetAllStudents)().then(students => res.status(200).json(students))
         .catch(err => res.status(400).json({ message: err.message }));
 });
 app.post('/students/delete', (req, res) => {
@@ -131,12 +129,12 @@ app.post('/create', (req, res) => {
     const first_name = req.body.first_name;
     const middle_name = req.body.middle_name;
     const last_name = req.body.last_name;
-    const stud_number = req.body.stud_number;
+    const isStaff = req.body.isStaff;
     const photo_url = req.body.photo_url;
     const section = req.body.section;
     const serial = req.body.serial;
     const parent_email = req.body.parent_email;
-    (0, database_1.CreateStudent)({ first_name, middle_name, last_name, stud_number, section, photo_url, serial, parent_email })
+    (0, database_1.CreateStudent)({ first_name, middle_name, last_name, isStaff, section, photo_url, serial, parent_email })
         .then(() => res.status(200).json({ message: "Student created successfully." }))
         .catch(err => {
         console.log(err.message);

@@ -69,7 +69,7 @@ function GetAllLogs() {
                         last_name: true,
                         middle_name: true,
                         section: true,
-                        stud_number: true
+                        isStaff: true
                     }
                 },
                 log_datetime: true,
@@ -117,7 +117,7 @@ function CreateStudent(student) {
                 first_name: student.first_name,
                 middle_name: student.middle_name,
                 last_name: student.last_name,
-                stud_number: parseInt(student.stud_number),
+                isStaff: student.isStaff,
                 section: student.section,
                 serial: student.serial,
                 photo_url: student.photo_url,
@@ -194,7 +194,7 @@ function GetAllStudents() {
     return __awaiter(this, void 0, void 0, function* () {
         const allStudents = yield dataPool.student.findMany({
             orderBy: {
-                stud_number: 'desc'
+                serial: 'desc'
             }
         });
         return allStudents;

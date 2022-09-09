@@ -59,7 +59,7 @@ export async function GetAllLogs() {
                     last_name: true,
                     middle_name: true,
                     section: true,
-                    stud_number: true
+                    isStaff: true
                 }
             },
             log_datetime: true,
@@ -106,7 +106,7 @@ export async function SendAttendanceEmail(serial: string, status: string) {
 }
 
 type StudentRecord = {
-    stud_number: string;
+    isStaff: boolean;
     first_name: string;
     last_name: string;
     middle_name: string;
@@ -122,7 +122,7 @@ export async function CreateStudent(student: StudentRecord) {
             first_name: student.first_name,
             middle_name: student.middle_name,
             last_name: student.last_name,
-            stud_number: parseInt(student.stud_number),
+            isStaff: student.isStaff,
             section: student.section,
             serial: student.serial,
             photo_url: student.photo_url,
@@ -192,7 +192,7 @@ export async function DeleteStudentRecord(serial: string) {
 export async function GetAllStudents() {
     const allStudents = await dataPool.student.findMany({
         orderBy: {
-            stud_number: 'desc'
+            serial: 'desc'
         }
     });
 
