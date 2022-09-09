@@ -1,18 +1,20 @@
 {
   "files": {
-    "main.js": "https://qrattendace.herokuapp.com/static/js/main.5b6d2264.js",
-    "static/js/525.5d84f56d.chunk.js": "https://qrattendace.herokuapp.com/static/js/525.5d84f56d.chunk.js",
+    "main.js": "https://qrattendace.herokuapp.com/static/js/main.ff644247.js",
+    "static/js/358.d906cc73.chunk.js": "https://qrattendace.herokuapp.com/static/js/358.d906cc73.chunk.js",
     "static/js/125.bccfce87.chunk.js": "https://qrattendace.herokuapp.com/static/js/125.bccfce87.chunk.js",
     "static/js/787.1e8e3ed7.chunk.js": "https://qrattendace.herokuapp.com/static/js/787.1e8e3ed7.chunk.js",
+    "static/js/70.0458fdab.chunk.js": "https://qrattendace.herokuapp.com/static/js/70.0458fdab.chunk.js",
     "static/js/24.97e9a193.chunk.js": "https://qrattendace.herokuapp.com/static/js/24.97e9a193.chunk.js",
     "index.html": "https://qrattendace.herokuapp.com/index.html",
-    "main.5b6d2264.js.map": "https://qrattendace.herokuapp.com/static/js/main.5b6d2264.js.map",
-    "525.5d84f56d.chunk.js.map": "https://qrattendace.herokuapp.com/static/js/525.5d84f56d.chunk.js.map",
+    "main.ff644247.js.map": "https://qrattendace.herokuapp.com/static/js/main.ff644247.js.map",
+    "358.d906cc73.chunk.js.map": "https://qrattendace.herokuapp.com/static/js/358.d906cc73.chunk.js.map",
     "125.bccfce87.chunk.js.map": "https://qrattendace.herokuapp.com/static/js/125.bccfce87.chunk.js.map",
     "787.1e8e3ed7.chunk.js.map": "https://qrattendace.herokuapp.com/static/js/787.1e8e3ed7.chunk.js.map",
+    "70.0458fdab.chunk.js.map": "https://qrattendace.herokuapp.com/static/js/70.0458fdab.chunk.js.map",
     "24.97e9a193.chunk.js.map": "https://qrattendace.herokuapp.com/static/js/24.97e9a193.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.5b6d2264.js"
+    "static/js/main.ff644247.js"
   ]
 }
