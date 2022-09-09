@@ -75,12 +75,12 @@ app.post('/account/log', (req, res) => {
         else if (data == 0) {
             await SendAttendanceEmail(serial, "out")
             io.sockets.to("common").emit("update_list", serial);
-            res.status(200).json({ message: "Student logged out successfully." });
+            res.status(200).json({ message: "Student logged out successfully.", serial: serial });
         }
         else {
             await SendAttendanceEmail(serial, "in")
             io.sockets.to("common").emit("update_list", serial);
-            res.status(200).json({ message: "Student logged in successfully." });
+            res.status(200).json({ message: "Student logged in successfully.", serial: serial });
         }
     }).catch(err => {
         res.status(500).json({ message: "Internal Error: " + err.message });
