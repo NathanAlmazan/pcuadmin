@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const node_rsa_1 = __importDefault(require("node-rsa"));
 const web_push_1 = __importDefault(require("web-push"));
 const http_1 = __importDefault(require("http"));
 const path_1 = __importDefault(require("path"));
@@ -31,6 +32,7 @@ app.use((0, cors_1.default)({
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.static(path_1.default.join(__dirname, '..', 'public')));
+const rsaKey = new node_rsa_1.default(process.env.RSA_PRIVATE_KEY);
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
     cors: {
@@ -41,8 +43,17 @@ const io = new socket_io_1.Server(server, {
 app.get(["/", "/signin", "/reset", "/dashboard/app"], (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "..", "public", "index.html"));
 });
-app.get('/log/:serial', (req, res) => {
-    const serial = req.params.serial;
+app.get("/serial/encrypt/:key", (req, res) => {
+    return res.status(200).json({ encrypted: rsaKey.encrypt(req.params.key, 'base64') });
+});
+app.post('/account/log', (req, res) => {
+    let serial = req.body.serial;
+    try {
+        serial = rsaKey.decrypt(serial, 'utf8');
+    }
+    catch (err) {
+        return res.status(400).json({ message: "Invalid serial" });
+    }
     (0, database_1.LoginStudent)(serial).then((data) => __awaiter(void 0, void 0, void 0, function* () {
         if (data == -1) {
             const payload = JSON.stringify({

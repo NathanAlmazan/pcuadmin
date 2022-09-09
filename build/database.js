@@ -104,7 +104,7 @@ function SendAttendanceEmail(serial, status) {
                 serial: serial
             }
         });
-        if (student) {
+        if (student && student.parent_email !== "none") {
             yield (0, emailConfig_1.default)(student.parent_email, `${student.first_name} ${student.last_name} Attendace Report`, `${student.last_name}, ${student.first_name} ${student.middle_name}`, new Date().toLocaleString(), status, student.last_name);
         }
         return null;

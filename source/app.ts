@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import NodeRSA from "node-rsa";
 import webpush, { PushSubscription } from "web-push";
 import http from 'http';
 import path from 'path';
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+const rsaKey = new NodeRSA(process.env.RSA_PRIVATE_KEY as string)
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
@@ -34,8 +36,18 @@ app.get(["/", "/signin", "/reset", "/dashboard/app"], (req, res) => {
     res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 })
 
-app.get('/log/:serial', (req, res) => {
-    const serial: string = req.params.serial;
+app.get("/serial/encrypt/:key", (req, res) => {
+    return res.status(200).json({ encrypted: rsaKey.encrypt(req.params.key, 'base64') });
+})
+
+app.post('/account/log', (req, res) => {
+    let serial: string = req.body.serial;
+
+    try {
+        serial = rsaKey.decrypt(serial, 'utf8')
+    } catch (err) {
+        return res.status(400).json({ message: "Invalid serial" })
+    }
 
     LoginStudent(serial).then(async (data) => {
         if (data == -1) {

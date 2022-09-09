@@ -92,7 +92,7 @@ export async function SendAttendanceEmail(serial: string, status: string) {
         }
     })
 
-    if (student) {
+    if (student && student.parent_email !== "none") {
         await sendEmail(
             student.parent_email, 
             `${student.first_name} ${student.last_name} Attendace Report`,
